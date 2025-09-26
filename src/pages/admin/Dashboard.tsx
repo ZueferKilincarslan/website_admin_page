@@ -5,6 +5,7 @@ import { LogOut, Users, MessageSquare, Calendar, Store, LayoutGrid as Layout, Pl
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
+import { getContacts } from '../../services/contacts';
 
 interface Countdown {
   id: string;
