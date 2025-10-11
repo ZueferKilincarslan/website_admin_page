@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MessageSquare, Mail, User, Calendar, Trash2, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getContacts } from '../../services/contacts';
 import { supabase } from '../../services/supabase';
 
 interface Contact {
@@ -44,8 +43,13 @@ const Kontaktformular: React.FC = () => {
   const fetchContacts = async () => {
     setLoading(true);
     try {
-      const contactsData = await getContacts();
-      setContacts(contactsData);
+      const { data, error } = await supabase
+        .from('contacts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setContacts(data || []);
     } catch (error) {
       console.error('Error fetching contacts:', error);
     } finally {

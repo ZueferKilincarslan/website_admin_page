@@ -5,7 +5,6 @@ import { LogOut, Users, MessageSquare, Calendar, Store, LayoutGrid as Layout, Pl
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabase';
-import { getContacts } from '../../services/contacts';
 
 interface Countdown {
   id: string;
@@ -112,8 +111,13 @@ const Dashboard: React.FC = () => {
   const fetchContacts = async () => {
     setContactsLoading(true);
     try {
-      const contactsData = await getContacts();
-      setContacts(contactsData);
+      const { data, error } = await supabase
+        .from('contacts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setContacts(data || []);
     } catch (error) {
       console.error('Error fetching contacts:', error);
     } finally {
